@@ -1,6 +1,4 @@
-package com.example.cangvel.utils;
-
-import com.example.cangvel.exceptions.FileExtensionNotSupportedException;
+package com.cangvel.utils;
 
 import java.io.File;
 import java.io.IOException;

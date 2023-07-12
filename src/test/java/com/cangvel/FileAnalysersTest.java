@@ -1,8 +1,8 @@
-package com.example.cangvel;
+package com.cangvel;
 
-import com.example.cangvel.exceptions.FileExtensionNotSupportedException;
-import com.example.cangvel.utils.FileContentAnalyser;
-import com.example.cangvel.utils.PdfFileContentAnalyser;
+import com.cangvel.exceptions.FileExtensionNotSupportedException;
+import com.cangvel.utils.FileContentAnalyser;
+import com.cangvel.utils.PdfFileContentAnalyser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +21,8 @@ public class FileAnalysersTest {
     @Test
     @DisplayName("Test pdf file read")
     public void testPdfFileContentRead(){
-        File f = new File("D:\\Projekty\\Cangvel\\src\\test\\java\\com\\example\\cangvel\\files\\short_text.pdf");
-        //File f = new File("..\\files\\short_text.pdf");
-        File bad = new File("D:\\Projekty\\Cangvel\\src\\test\\java\\com\\example\\cangvel\\files\\bad_file.bad");
+        File f = new File("./src/test/java/com/cangvel/files/short_text.pdf");
+        File bad = new File("./src/test/java/com/cangvel/files/bad_file.bad");
         String expectedContent = "Content test.\r\n1\r\n";
 
         try{

@@ -1,4 +1,4 @@
-package com.example.cangvel.exceptions;
+package com.cangvel.exceptions;
 
 import java.io.IOException;
 

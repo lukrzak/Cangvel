@@ -1,4 +1,4 @@
-package com.example.cangvel;
+package com.cangvel;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

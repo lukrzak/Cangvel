@@ -1,6 +1,6 @@
-package com.example.cangvel.utils;
+package com.cangvel.utils;
 
-import com.example.cangvel.exceptions.FileExtensionNotSupportedException;
+import com.cangvel.exceptions.FileExtensionNotSupportedException;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
