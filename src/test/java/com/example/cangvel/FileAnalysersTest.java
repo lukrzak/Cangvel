@@ -8,23 +8,32 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class FileAnalysersTest {
 
-    private final FileContentAnalyser pdfAnalyser = new PdfFileContentAnalyser();
+    private final Set<String> availableExtensionsForPdfAnalyser = new HashSet<>(List.of("pdf"));
+    private final FileContentAnalyser pdfAnalyser = new PdfFileContentAnalyser(availableExtensionsForPdfAnalyser);
 
     @Test
     @DisplayName("Test pdf file read")
     public void testPdfFileContentRead(){
-        File f = new File("files/short_text.pdf");
-        File loremFile = new File("files/only_text/pdf");
-        File bad = new File("files/bad_file.bad");
-        String expectedContent = "Content test.";
+        File f = new File("D:\\Projekty\\Cangvel\\src\\test\\java\\com\\example\\cangvel\\files\\short_text.pdf");
+        //File f = new File("..\\files\\short_text.pdf");
+        File bad = new File("D:\\Projekty\\Cangvel\\src\\test\\java\\com\\example\\cangvel\\files\\bad_file.bad");
+        String expectedContent = "Content test.\r\n1\r\n";
 
-        String fileContent = pdfAnalyser.readFileContent(f);
-
-        Assertions.assertEquals(fileContent, expectedContent);
-        Assertions.assertThrows(IllegalArgumentException.class, () -> pdfAnalyser.readFileContent(null), "Cannot pass null as file");
-        Assertions.assertThrows(FileExtensionNotSupportedException.class, () -> pdfAnalyser.readFileContent(bad), "Method must verify extension");
+        try{
+            String fileContent = pdfAnalyser.readFileContent(f);
+            Assertions.assertEquals(fileContent, expectedContent, "File contents dont match");
+        }
+        catch (IOException e){
+            Assertions.fail();
+        }
+        Assertions.assertThrows(NullPointerException.class, () -> pdfAnalyser.readFileContent(null), "Null must throw exception");
+        Assertions.assertThrows(FileExtensionNotSupportedException.class, () -> pdfAnalyser.readFileContent(bad), "Must throw exception when file with bad extension is passed");
     }
 }
