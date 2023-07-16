@@ -1,6 +1,7 @@
 package com.cangvel.utils;
 
 import com.cangvel.exceptions.FileExtensionNotSupportedException;
+import com.cangvel.models.PdfData;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -40,6 +41,11 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
 
     @Override
     public Collection<String> getKeyWords(Collection<String> keywords, Collection<String> words) {
+        return null;
+    }
+
+    @Override
+    public PdfData getPdfData(File file) {
         return null;
     }
 

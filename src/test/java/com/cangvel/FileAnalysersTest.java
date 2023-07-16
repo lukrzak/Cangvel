@@ -1,6 +1,7 @@
 package com.cangvel;
 
 import com.cangvel.exceptions.FileExtensionNotSupportedException;
+import com.cangvel.models.PdfData;
 import com.cangvel.utils.FileContentAnalyser;
 import com.cangvel.utils.PdfFileContentAnalyser;
 import org.junit.jupiter.api.Assertions;
@@ -34,5 +35,21 @@ public class FileAnalysersTest {
         }
         Assertions.assertThrows(NullPointerException.class, () -> pdfAnalyser.readFileContent(null), "Null must throw exception");
         Assertions.assertThrows(FileExtensionNotSupportedException.class, () -> pdfAnalyser.readFileContent(bad), "Must throw exception when file with bad extension is passed");
+    }
+
+    @Test
+    @DisplayName("Test pdf analyser collected data")
+    public void testPdfFileInfo(){
+        File text = new File("./src/test/java/com/cangvel/files/only_text.pdf");
+        File textWithImage = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
+
+        PdfData dataFromTextPdf = pdfAnalyser.getPdfData(text);
+        PdfData dataFromTextAndImagePdf = pdfAnalyser.getPdfData(textWithImage);
+
+        Assertions.assertNotNull(dataFromTextPdf);
+        Assertions.assertNotNull(dataFromTextAndImagePdf);
+        Assertions.assertFalse(dataFromTextPdf.hasImage());
+        Assertions.assertTrue(dataFromTextAndImagePdf.hasImage());
+        Assertions.assertTrue(dataFromTextAndImagePdf.size() < 40 * 1024);
     }
 }
