@@ -3,10 +3,19 @@ package com.cangvel.utils;
 import com.cangvel.exceptions.FileExtensionNotSupportedException;
 import com.cangvel.models.PdfData;
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -24,7 +33,8 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     public String readFileContent(File file) throws IOException {
         validateFile(file);
 
-        try (PDDocument pdf = Loader.loadPDF(file)) {
+        try {
+            PDDocument pdf = getPdfDocument(file);
             PDFTextStripper stripper = new PDFTextStripper();
             return stripper.getText(pdf);
         } catch (IOException e) {
@@ -46,7 +56,17 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
 
     @Override
     public PdfData getPdfData(File file) {
-        return null;
+        PdfData data = new PdfData(file.length(), false);
+        try{
+            PDDocument pdf = getPdfDocument(file);
+            if(checkIfDocumentHasImage(pdf)){
+                data.setHasImage(true);
+            };
+        }
+        catch (IOException e){
+            System.err.println(e.getMessage());
+        }
+        return data;
     }
 
     private void validateFile(File file) throws FileExtensionNotSupportedException{
@@ -54,6 +74,16 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
             throw new NullPointerException();
         }
         checkForCorrectExtension(file.getName());
+    }
+
+    private PDDocument getPdfDocument(File file) throws IOException {
+        try{
+            return Loader.loadPDF(file);
+        }
+        catch (IOException e){
+            System.err.println(e.getMessage());
+        }
+        throw new IOException("No such file");
     }
 
     private void checkForCorrectExtension(String filename) throws FileExtensionNotSupportedException {
@@ -65,5 +95,24 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     private boolean checkIfExtensionsDoesntMatch(String filename){
         String extension = filename.substring(filename.lastIndexOf(".") + 1);
         return !allowedExtensions.contains(extension);
+    }
+
+    private boolean checkIfDocumentHasImage(PDDocument pdf){
+         PDPageTree pageTree = pdf.getPages();
+         for(PDPage page : pageTree){
+             PDResources resources = page.getResources();
+             for (COSName cosName : resources.getXObjectNames()){
+                 try{
+                     PDXObject o = resources.getXObject(cosName);
+                     if (o instanceof PDImageXObject){
+                         return true;
+                     }
+                 }
+                 catch (IOException e){
+                     continue;
+                 }
+             }
+         }
+         return false;
     }
 }

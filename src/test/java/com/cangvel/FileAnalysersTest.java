@@ -50,6 +50,6 @@ public class FileAnalysersTest {
         Assertions.assertNotNull(dataFromTextAndImagePdf);
         Assertions.assertFalse(dataFromTextPdf.hasImage());
         Assertions.assertTrue(dataFromTextAndImagePdf.hasImage());
-        Assertions.assertTrue(dataFromTextAndImagePdf.size() < 40 * 1024);
+        Assertions.assertTrue(dataFromTextAndImagePdf.getSize() < 40 * 1024);
     }
 }
