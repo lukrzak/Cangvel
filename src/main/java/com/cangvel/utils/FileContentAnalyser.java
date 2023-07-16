@@ -10,5 +10,5 @@ public interface FileContentAnalyser {
     String readFileContent(File file) throws IOException;
     Collection<String> getWordList(String fileContent);
     Collection<String> getKeyWords(Collection<String> keywords, Collection<String> words);
-    PdfData getPdfData(File file);
+    PdfData getPdfData(File file) throws IOException;
 }

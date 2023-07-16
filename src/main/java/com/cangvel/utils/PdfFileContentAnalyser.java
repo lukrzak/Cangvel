@@ -56,7 +56,8 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     }
 
     @Override
-    public PdfData getPdfData(File file) {
+    public PdfData getPdfData(File file) throws FileExtensionNotSupportedException {
+        validateFile(file);
         PdfData data = new PdfData(file.length(), false);
         try{
             PDDocument pdf = getPdfDocument(file);

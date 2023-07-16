@@ -5,7 +5,7 @@ import lombok.Setter;
 
 public class PdfData {
     @Getter
-    private long size;
+    private final long size;
     @Setter
     private boolean hasImage;
 

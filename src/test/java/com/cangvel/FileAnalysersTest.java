@@ -43,14 +43,19 @@ public class FileAnalysersTest {
         File text = new File("./src/test/java/com/cangvel/files/only_text.pdf");
         File textWithImage = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
 
-        PdfData dataFromTextPdf = pdfAnalyser.getPdfData(text);
-        PdfData dataFromTextAndImagePdf = pdfAnalyser.getPdfData(textWithImage);
+        try{
+            PdfData dataFromTextPdf = pdfAnalyser.getPdfData(text);
+            PdfData dataFromTextAndImagePdf = pdfAnalyser.getPdfData(textWithImage);
 
-        Assertions.assertNotNull(dataFromTextPdf);
-        Assertions.assertNotNull(dataFromTextAndImagePdf);
-        Assertions.assertFalse(dataFromTextPdf.hasImage());
-        Assertions.assertTrue(dataFromTextAndImagePdf.hasImage());
-        Assertions.assertTrue(dataFromTextAndImagePdf.getSize() < 40 * 1024);
+            Assertions.assertNotNull(dataFromTextPdf);
+            Assertions.assertNotNull(dataFromTextAndImagePdf);
+            Assertions.assertFalse(dataFromTextPdf.hasImage());
+            Assertions.assertTrue(dataFromTextAndImagePdf.hasImage());
+            Assertions.assertTrue(dataFromTextAndImagePdf.getSize() < 40 * 1024);
+        }
+        catch (IOException e){
+            Assertions.fail();
+        }
     }
 
     @Test
