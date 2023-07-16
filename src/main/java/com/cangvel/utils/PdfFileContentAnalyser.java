@@ -46,7 +46,7 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     }
 
     @Override
-    public Collection<String> getWordList(String fileContent) {
+    public Collection<String> getWords(String fileContent) {
         return null;
     }
 

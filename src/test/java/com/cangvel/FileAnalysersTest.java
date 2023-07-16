@@ -10,9 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class FileAnalysersTest {
 
@@ -58,9 +56,39 @@ public class FileAnalysersTest {
         }
     }
 
-    @Test
-    @DisplayName("Test analysing keywords in pdf file")
-    public void testPdfKeywordAnalysis(){
 
+    @Test
+    @DisplayName("Test getting collection of words")
+    public void testGettingWordCollection(){
+        File text = new File("./src/test/java/com/cangvel/files/only_text.pdf");
+        File textWithImage = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
+        Set<String> partOfExpectedResult = new HashSet<>(List.of("lorem", "ipsum", "sit", "dolor", "amet"));
+        Set<String> forbiddenWords = new HashSet<>(List.of("amet,", "laborum.", "aliqua.", ",", ".", "1"));
+
+        try{
+            Collection<String> textResult = pdfAnalyser.getWords(pdfAnalyser.readFileContent(text));
+            Collection<String> textWithImageResult = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textWithImage));
+
+            Assertions.assertNotNull(textResult);
+            Assertions.assertNotNull(textWithImageResult);
+            Assertions.assertTrue(textResult.containsAll(partOfExpectedResult));
+            Assertions.assertTrue(textWithImageResult.containsAll(partOfExpectedResult));
+            Assertions.assertFalse(textResult.stream().anyMatch(forbiddenWords::contains));
+            Assertions.assertFalse(textWithImageResult.stream().anyMatch(forbiddenWords::contains));
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+            Assertions.fail();
+        }
     }
+
+    //TODO finish implementation of test
+//    @Test
+//    @DisplayName("Test analysing keywords in pdf file")
+//    public void testPdfKeywordAnalysis(){
+//        Set<String> keywords = new HashSet<>(List.of("lorem", "ipsum", "word", "ipsumm"));
+//        Set<String> expectedResultSet = new HashSet<>(List.of("lorem", "ipsum"));
+//
+//        //Set<String> result = pdfAnalyser.
+//    }
 }
