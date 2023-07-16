@@ -2,8 +2,8 @@ package com.cangvel;
 
 import com.cangvel.exceptions.FileExtensionNotSupportedException;
 import com.cangvel.models.PdfData;
-import com.cangvel.utils.FileContentAnalyser;
-import com.cangvel.utils.PdfFileContentAnalyser;
+import com.cangvel.utils.analysers.FileContentAnalyser;
+import com.cangvel.utils.analysers.PdfFileContentAnalyser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

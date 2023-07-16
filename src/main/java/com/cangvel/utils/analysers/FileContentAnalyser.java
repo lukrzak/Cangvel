@@ -1,4 +1,4 @@
-package com.cangvel.utils;
+package com.cangvel.utils.analysers;
 
 import com.cangvel.models.PdfData;
 
