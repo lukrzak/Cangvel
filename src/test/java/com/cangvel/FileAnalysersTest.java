@@ -52,4 +52,10 @@ public class FileAnalysersTest {
         Assertions.assertTrue(dataFromTextAndImagePdf.hasImage());
         Assertions.assertTrue(dataFromTextAndImagePdf.getSize() < 40 * 1024);
     }
+
+    @Test
+    @DisplayName("Test analysing keywords in pdf file")
+    public void testPdfKeywordAnalysis(){
+
+    }
 }

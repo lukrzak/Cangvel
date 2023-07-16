@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @Component
 public class PdfFileContentAnalyser implements FileContentAnalyser{
@@ -101,18 +102,25 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
          PDPageTree pageTree = pdf.getPages();
          for(PDPage page : pageTree){
              PDResources resources = page.getResources();
-             for (COSName cosName : resources.getXObjectNames()){
-                 try{
-                     PDXObject o = resources.getXObject(cosName);
-                     if (o instanceof PDImageXObject){
-                         return true;
-                     }
-                 }
-                 catch (IOException e){
-                     continue;
-                 }
+             if(pdfResourcesContainImage(resources)){
+                 return true;
              }
          }
          return false;
+    }
+
+    private boolean pdfResourcesContainImage(PDResources resources){
+        for (COSName cosName : resources.getXObjectNames()){
+            try{
+                PDXObject o = resources.getXObject(cosName);
+                if (o instanceof PDImageXObject){
+                    return true;
+                }
+            }
+            catch (IOException e){
+                System.err.println(e.getMessage());
+            }
+        }
+        return false;
     }
 }
