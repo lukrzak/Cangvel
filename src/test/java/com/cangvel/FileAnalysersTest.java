@@ -16,52 +16,47 @@ public class FileAnalysersTest {
 
     private final Set<String> availableExtensionsForPdfAnalyser = new HashSet<>(List.of("pdf"));
     private final FileContentAnalyser pdfAnalyser = new PdfFileContentAnalyser(availableExtensionsForPdfAnalyser);
+    private final File text = new File("./src/test/java/com/cangvel/files/only_text.pdf");
+    private final File textWithImage = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
+    private final File badFile = new File("./src/test/java/com/cangvel/files/bad_file.bad");
+    private final File shortTextFile = new File("./src/test/java/com/cangvel/files/short_text.pdf");
 
     @Test
     @DisplayName("Test pdf file read")
     public void testPdfFileContentRead(){
-        File f = new File("./src/test/java/com/cangvel/files/short_text.pdf");
-        File bad = new File("./src/test/java/com/cangvel/files/bad_file.bad");
         String expectedContent = "Content test.\r\n1\r\n";
-
         try{
-            String fileContent = pdfAnalyser.readFileContent(f);
+            String fileContent = pdfAnalyser.readFileContent(shortTextFile);
             Assertions.assertEquals(fileContent, expectedContent, "File contents dont match");
         }
         catch (IOException e){
             Assertions.fail();
         }
         Assertions.assertThrows(NullPointerException.class, () -> pdfAnalyser.readFileContent(null), "Null must throw exception");
-        Assertions.assertThrows(FileExtensionNotSupportedException.class, () -> pdfAnalyser.readFileContent(bad), "Must throw exception when file with bad extension is passed");
+        Assertions.assertThrows(FileExtensionNotSupportedException.class, () -> pdfAnalyser.readFileContent(badFile), "Must throw exception when file with bad extension is passed");
     }
 
     @Test
     @DisplayName("Test pdf analyser collected data")
     public void testPdfFileInfo(){
-        File text = new File("./src/test/java/com/cangvel/files/only_text.pdf");
-        File textWithImage = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
-
         try{
             PdfData dataFromTextPdf = pdfAnalyser.getPdfData(text);
             PdfData dataFromTextAndImagePdf = pdfAnalyser.getPdfData(textWithImage);
 
-            Assertions.assertNotNull(dataFromTextPdf);
-            Assertions.assertNotNull(dataFromTextAndImagePdf);
-            Assertions.assertFalse(dataFromTextPdf.hasImage());
-            Assertions.assertTrue(dataFromTextAndImagePdf.hasImage());
-            Assertions.assertTrue(dataFromTextAndImagePdf.getSize() < 40 * 1024);
+            Assertions.assertNotNull(dataFromTextPdf, "data cannot be null");
+            Assertions.assertNotNull(dataFromTextAndImagePdf, "data cannot be null");
+            Assertions.assertFalse(dataFromTextPdf.hasImage(), "Method must detect image");
+            Assertions.assertTrue(dataFromTextAndImagePdf.hasImage(), "Method must detect image");
+            Assertions.assertTrue(dataFromTextAndImagePdf.getSize() < 40 * 1024, "Method must read size properly in bytes");
         }
         catch (IOException e){
-            Assertions.fail();
+            Assertions.fail("Cannot read file");
         }
     }
-
 
     @Test
     @DisplayName("Test getting collection of words")
     public void testGettingWordCollection(){
-        File text = new File("./src/test/java/com/cangvel/files/only_text.pdf");
-        File textWithImage = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
         Set<String> partOfExpectedResult = new HashSet<>(List.of("lorem", "ipsum", "sit", "dolor", "amet"));
         Set<String> forbiddenWords = new HashSet<>(List.of("amet,", "laborum.", "aliqua.", ",", ".", "1"));
 
@@ -78,7 +73,7 @@ public class FileAnalysersTest {
         }
         catch (IOException e){
             System.out.println(e.getMessage());
-            Assertions.fail();
+            Assertions.fail("Cannot read file. Check if path is correct");
         }
     }
 

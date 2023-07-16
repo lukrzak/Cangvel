@@ -19,8 +19,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Component
 public class PdfFileContentAnalyser implements FileContentAnalyser{
@@ -47,7 +50,15 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
 
     @Override
     public Collection<String> getWords(String fileContent) {
-        return null;
+        String trimmedContent = removeEscapeCharactersFromFileContent(fileContent);
+        Set<String> filteredWords = new HashSet<>(List.of(trimmedContent.split(" ")));
+        filteredWords = filteredWords.stream()
+                .map(String::toLowerCase)
+                .map(this::removePunctuationFromWord)
+                .filter(w -> w.matches("[a-z]{1,}"))
+                .collect(Collectors.toSet());
+
+        return filteredWords;
     }
 
     @Override
@@ -123,5 +134,17 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
             }
         }
         return false;
+    }
+
+    private String removePunctuationFromWord(String word){
+        return word.replaceAll("\\p{Punct}", "");
+    }
+
+    private String removeEscapeCharactersFromFileContent(String word){
+        String finalWord = word.replaceAll("\r", " ");
+        finalWord = word.replaceAll("\t", "");
+        finalWord = word.replaceAll("\n", "");
+
+        return finalWord.trim().replace("\r", " ");
     }
 }
