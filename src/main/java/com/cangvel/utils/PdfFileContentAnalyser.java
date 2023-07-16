@@ -63,7 +63,9 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
 
     @Override
     public Collection<String> getKeyWords(Collection<String> keywords, Collection<String> words) {
-        return null;
+        return words.stream()
+                .filter(keywords::contains)
+                .collect(Collectors.toSet());
     }
 
     @Override
