@@ -2,6 +2,7 @@ package com.cangvel;
 
 import com.cangvel.models.CvEvaluation;
 import com.cangvel.models.CvRequirements;
+import com.cangvel.models.requirements.ContainsAtLeastNumberOfWords;
 import com.cangvel.models.requirements.ContainsProfilePictureRequirement;
 import com.cangvel.utils.analysers.FileContentAnalyser;
 import com.cangvel.utils.analysers.PdfFileContentAnalyser;
@@ -23,14 +24,16 @@ public class CvEvaluationTests {
     // Predefined requirements
     CvRequirements requirements1 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"), Set.of(), 0.6F);
     CvRequirements requirements2 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"), Set.of(new ContainsProfilePictureRequirement()), 0.6F);
-    CvRequirements requirements3 = new CvRequirements(Set.of("aaaaa", "bbbbb"), Set.of("ccccc"), Set.of(), 0.6F);
+    CvRequirements requirements3 = new CvRequirements(Set.of("aaaaa", "bbbbb"), Set.of("ccccc"), Set.of(new ContainsAtLeastNumberOfWords(5)), 0.25F);
 
     // Set of test files
     private final File textFile = new File("./src/test/java/com/cangvel/files/only_text.pdf");
+    private final File shortTextFile = new File("./src/test/java/com/cangvel/files/short_text.pdf");
     private final File textWithImageFile = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
 
     FileContentAnalyser analyser = new PdfFileContentAnalyser(Set.of("pdf"));
     Evaluator evaluatorForTextFile;
+    Evaluator evaluatorForShortTextFile;
     Evaluator evaluatorForTextWithImageFile;
 
     @BeforeEach
@@ -38,33 +41,26 @@ public class CvEvaluationTests {
         try{
             this.evaluatorForTextFile = new DefaultEvaluator(analyser.getPdfData(textFile));
             this.evaluatorForTextWithImageFile = new DefaultEvaluator(analyser.getPdfData(textWithImageFile));
+            this.evaluatorForShortTextFile = new DefaultEvaluator(analyser.getPdfData(shortTextFile));
         }
         catch (IOException e){
-            System.err.println("Cannot evaluate file file");
+            System.err.println("Cannot evaluate file");
         }
     }
 
     @Test
     @DisplayName("Test default evaluator")
     public void testDefaultEvaluatorWithTextOnlyFile(){
-        List<CvRequirements> requirements = new ArrayList<>(List.of(requirements1, requirements2, requirements3));
-        // expected results sets for cv with text only and text with profile picture
-        List<Float> requirementsFulfilmentForTextOnly = new ArrayList<>(List.of(0.66f, 0.50f, 0.00f));
-        List<Float> requirementsFulfilmentForTextAndImage = new ArrayList<>(List.of(0.66f, 0.75f, 0.00f));
-        List<Boolean> acceptanceForTextOnly = new ArrayList<>(List.of(true, false, false));
-        List<Boolean> acceptanceForTextAndImage = new ArrayList<>(List.of(true, true, false));
+        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements1), 0.66f, true);
+        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements2), 0.50f, false);
+        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements3), 0.25f, true);
 
-        for(int i = 0; i < requirements.size(); i++){
-            testEvaluator(
-                    evaluatorForTextFile.evaluateCvFile(requirements.get(i)),
-                    requirementsFulfilmentForTextOnly.get(i),
-                    acceptanceForTextOnly.get(i));
-            testEvaluator(
-                    evaluatorForTextWithImageFile.evaluateCvFile(requirements.get(i)),
-                    requirementsFulfilmentForTextAndImage.get(i),
-                    acceptanceForTextAndImage.get(i));
-        }
+        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements1), 0.66f, true);
+        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements2), 0.75f, true);
+        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements3), 0.25f, true);
 
+        testEvaluator(evaluatorForShortTextFile.evaluateCvFile(requirements2), 0.00f, false);
+        testEvaluator(evaluatorForShortTextFile.evaluateCvFile(requirements3), 0.00f, false);
     }
 
     public void testEvaluator(CvEvaluation evaluation, float requirementsFulfillment, boolean isAccepted){
