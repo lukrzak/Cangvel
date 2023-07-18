@@ -48,10 +48,10 @@ public class CvEvaluationTests {
     public void testDefaultEvaluatorWithTextOnlyFile(){
         List<CvRequirements> requirements = new ArrayList<>(List.of(requirements1, requirements2, requirements3));
         // expected results sets for cv with text only and text with profile picture
-        List<Float> requirementsFulfilmentForTextOnly = new ArrayList<>(List.of(0.50f, 0.50f, 0.00f));
-        List<Float> requirementsFulfilmentForTextAndImage = new ArrayList<>(List.of(0.50f, 0.75f, 0.00f));
-        List<Boolean> acceptanceForTextOnly = new ArrayList<>(List.of(false, false, false));
-        List<Boolean> acceptanceForTextAndImage = new ArrayList<>(List.of(false, true, false));
+        List<Float> requirementsFulfilmentForTextOnly = new ArrayList<>(List.of(0.66f, 0.50f, 0.00f));
+        List<Float> requirementsFulfilmentForTextAndImage = new ArrayList<>(List.of(0.66f, 0.75f, 0.00f));
+        List<Boolean> acceptanceForTextOnly = new ArrayList<>(List.of(true, false, false));
+        List<Boolean> acceptanceForTextAndImage = new ArrayList<>(List.of(true, true, false));
 
         for(int i = 0; i < requirements.size(); i++){
             testEvaluator(
