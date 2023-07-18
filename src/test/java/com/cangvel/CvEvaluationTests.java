@@ -2,6 +2,7 @@ package com.cangvel;
 
 import com.cangvel.models.CvEvaluation;
 import com.cangvel.models.CvRequirements;
+import com.cangvel.models.contidions.ContainsProfilePictureRequirement;
 import com.cangvel.utils.analysers.FileContentAnalyser;
 import com.cangvel.utils.analysers.PdfFileContentAnalyser;
 import com.cangvel.utils.evaluators.DefaultEvaluator;
@@ -20,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class CvEvaluationTests {
 
     // Predefined requirements
-    CvRequirements requirements1 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"), false, 0.6F);
-    CvRequirements requirements2 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"), true, 0.6F);
-    CvRequirements requirements3 = new CvRequirements(Set.of("aaaaa", "bbbbb"), Set.of("ccccc"), false, 0.6F);
+    CvRequirements requirements1 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"), Set.of(), 0.6F);
+    CvRequirements requirements2 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"), Set.of(new ContainsProfilePictureRequirement()), 0.6F);
+    CvRequirements requirements3 = new CvRequirements(Set.of("aaaaa", "bbbbb"), Set.of("ccccc"), Set.of(), 0.6F);
 
     // Set of test files
     private final File textFile = new File("./src/test/java/com/cangvel/files/only_text.pdf");
