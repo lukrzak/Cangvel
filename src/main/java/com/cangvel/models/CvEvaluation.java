@@ -1,14 +1,22 @@
 package com.cangvel.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import java.util.Set;
+
+@Getter
+@Setter
 public class CvEvaluation {
     private float requirementFulfillment;
     private boolean isAccepted;
+    private final Set<String> foundRequiredKeywords;
+    private final Set<String> foundOptionalKeywords;
 
-    public CvEvaluation(float requirementFulfillment, boolean isAccepted) {
+    public CvEvaluation(float acceptanceThreshold, float requirementFulfillment, Set<String> foundRequiredKeywords, Set<String> foundOptionalKeywords) {
         this.requirementFulfillment = requirementFulfillment;
-        this.isAccepted = isAccepted;
+        this.foundRequiredKeywords = foundRequiredKeywords;
+        this.foundOptionalKeywords = foundOptionalKeywords;
+        this.isAccepted = requirementFulfillment >= acceptanceThreshold;
     }
 }
