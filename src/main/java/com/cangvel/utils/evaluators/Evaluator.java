@@ -5,5 +5,5 @@ import com.cangvel.models.CvRequirements;
 import com.cangvel.models.PdfData;
 
 public interface Evaluator {
-    CvEvaluation evaluateCvFile(CvRequirements requirements, PdfData cv);
+    CvEvaluation evaluateCvFile(CvRequirements requirements);
 }
