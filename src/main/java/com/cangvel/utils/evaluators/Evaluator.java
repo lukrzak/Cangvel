@@ -5,4 +5,5 @@ import com.cangvel.models.CvRequirements;
 
 public interface Evaluator {
     CvEvaluation evaluateCvFile(CvRequirements requirements);
+    float calculateEvaluationValue(CvRequirements requirements);
 }
