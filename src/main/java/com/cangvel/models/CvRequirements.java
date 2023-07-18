@@ -1,6 +1,6 @@
 package com.cangvel.models;
 
-import com.cangvel.models.contidions.Requirement;
+import com.cangvel.models.requirements.Requirement;
 
 import java.util.Set;
 

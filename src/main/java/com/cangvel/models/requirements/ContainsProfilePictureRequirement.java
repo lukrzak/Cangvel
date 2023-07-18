@@ -1,4 +1,4 @@
-package com.cangvel.models.contidions;
+package com.cangvel.models.requirements;
 
 import com.cangvel.models.CvData;
 

@@ -1,7 +1,6 @@
-package com.cangvel.models.contidions;
+package com.cangvel.models.requirements;
 
 import com.cangvel.models.CvData;
-import org.apache.pdfbox.pdmodel.PDDocument;
 
 public interface Requirement {
 

@@ -3,7 +3,7 @@ package com.cangvel.utils.evaluators;
 import com.cangvel.models.CvData;
 import com.cangvel.models.CvEvaluation;
 import com.cangvel.models.CvRequirements;
-import com.cangvel.models.contidions.Requirement;
+import com.cangvel.models.requirements.Requirement;
 
 import java.util.Set;
 import java.util.stream.Collectors;

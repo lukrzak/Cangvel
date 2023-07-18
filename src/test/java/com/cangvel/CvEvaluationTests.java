@@ -2,7 +2,7 @@ package com.cangvel;
 
 import com.cangvel.models.CvEvaluation;
 import com.cangvel.models.CvRequirements;
-import com.cangvel.models.contidions.ContainsProfilePictureRequirement;
+import com.cangvel.models.requirements.ContainsProfilePictureRequirement;
 import com.cangvel.utils.analysers.FileContentAnalyser;
 import com.cangvel.utils.analysers.PdfFileContentAnalyser;
 import com.cangvel.utils.evaluators.DefaultEvaluator;
