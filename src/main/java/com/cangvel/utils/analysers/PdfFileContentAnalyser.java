@@ -140,10 +140,11 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     }
 
     private String removeEscapeCharactersFromFileContent(String word){
-        String finalWord = word.replaceAll("\r", " ");
-        finalWord = word.replaceAll("\t", "");
-        finalWord = word.replaceAll("\n", "");
-
-        return finalWord.trim().replace("\r", " ");
+        return word
+                .replaceAll("\r", " ")
+                .replaceAll("\t", "")
+                .replaceAll("\n", "")
+                .trim()
+                .replace("\r", " ");
     }
 }
