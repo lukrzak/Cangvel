@@ -6,7 +6,6 @@ import com.cangvel.utils.analysers.FileContentAnalyser;
 import com.cangvel.utils.analysers.PdfFileContentAnalyser;
 import com.cangvel.utils.evaluators.DefaultEvaluator;
 import com.cangvel.utils.evaluators.Evaluator;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CvEvaluationTests {
 
@@ -68,7 +68,7 @@ public class CvEvaluationTests {
 
     public void testEvaluator(CvEvaluation evaluation, float requirementsFulfillment, boolean isAccepted){
         assertNotNull(evaluation, "Evaluation should not be null");
-        assertEquals(evaluation.getRequirementFulfillment(), requirementsFulfillment, 0.01, "Wrong percentage of fulfilled requirements");
+        assertEquals(evaluation.requirementFulfillment(), requirementsFulfillment, 0.01, "Wrong percentage of fulfilled requirements");
         assertEquals(evaluation.isAccepted(), isAccepted);
     }
 }
