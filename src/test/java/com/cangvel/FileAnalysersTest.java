@@ -1,7 +1,7 @@
 package com.cangvel;
 
 import com.cangvel.exceptions.FileExtensionNotSupportedException;
-import com.cangvel.models.PdfData;
+import com.cangvel.models.CvData;
 import com.cangvel.utils.analysers.FileContentAnalyser;
 import com.cangvel.utils.analysers.PdfFileContentAnalyser;
 import org.junit.jupiter.api.DisplayName;
@@ -41,14 +41,14 @@ public class FileAnalysersTest {
     @DisplayName("Test pdf analyser collected data")
     public void testPdfFileInfo(){
         try{
-            PdfData dataFromTextPdf = pdfAnalyser.getPdfData(textFile);
-            PdfData dataFromTextAndImagePdf = pdfAnalyser.getPdfData(textWithImage);
+            CvData dataFromTextPdf = pdfAnalyser.getPdfData(textFile);
+            CvData dataFromTextAndImagePdf = pdfAnalyser.getPdfData(textWithImage);
 
             assertNotNull(dataFromTextPdf, "data cannot be null");
             assertNotNull(dataFromTextAndImagePdf, "data cannot be null");
             assertFalse(dataFromTextPdf.hasImage(), "Method must detect image");
             assertTrue(dataFromTextAndImagePdf.hasImage(), "Method must detect image");
-            assertTrue(dataFromTextAndImagePdf.getSize() < 40 * 1024, "Method must read size properly in bytes");
+            assertTrue(dataFromTextAndImagePdf.size() < 40 * 1024, "Method must read size properly in bytes");
         }
         catch (IOException e){
             fail("Cannot read file");

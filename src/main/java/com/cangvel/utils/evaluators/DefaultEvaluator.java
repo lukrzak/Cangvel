@@ -1,19 +1,19 @@
 package com.cangvel.utils.evaluators;
 
+import com.cangvel.models.CvData;
 import com.cangvel.models.CvEvaluation;
 import com.cangvel.models.CvRequirements;
-import com.cangvel.models.PdfData;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DefaultEvaluator implements Evaluator{
 
-    private final PdfData cv;
+    private final CvData cv;
     private Set<String> requiredWordsFoundInFile;
     private Set<String> optionalWordsFoundInFile;
 
-    public DefaultEvaluator(PdfData cv) {
+    public DefaultEvaluator(CvData cv) {
         this.cv = cv;
     }
 
@@ -40,7 +40,7 @@ public class DefaultEvaluator implements Evaluator{
 
     private Set<String> getKeywordsIncludedInFile(Set<String> keywords){
         Set<String> lowercaseKeywords = keywords.stream().map(String::toLowerCase).collect(Collectors.toSet());
-        return this.cv.getWords().stream()
+        return this.cv.words().stream()
                 .filter(lowercaseKeywords::contains)
                 .collect(Collectors.toSet());
     }

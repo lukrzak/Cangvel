@@ -1,6 +1,6 @@
 package com.cangvel.utils.analysers;
 
-import com.cangvel.models.PdfData;
+import com.cangvel.models.CvData;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,5 +10,5 @@ public interface FileContentAnalyser {
     String readFileContent(File file) throws IOException;
     Collection<String> getWords(String fileContent);
     Collection<String> getKeyWords(Collection<String> keywords, Collection<String> words);
-    PdfData getPdfData(File file) throws IOException;
+    CvData getPdfData(File file) throws IOException;
 }

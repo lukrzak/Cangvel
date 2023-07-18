@@ -1,7 +1,7 @@
 package com.cangvel.utils.analysers;
 
 import com.cangvel.exceptions.FileExtensionNotSupportedException;
-import com.cangvel.models.PdfData;
+import com.cangvel.models.CvData;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -65,16 +65,12 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     }
 
     @Override
-    public PdfData getPdfData(File file) throws FileExtensionNotSupportedException {
+    public CvData getPdfData(File file) throws FileExtensionNotSupportedException {
         validateFile(file);
         try{
             Set<String> wordsFromFile = (Set<String>) getWords(readFileContent(file));
-            PdfData data = new PdfData(wordsFromFile, file.length(), false);
             PDDocument pdf = getPdfDocument(file);
-            if(checkIfDocumentHasImage(pdf)){
-                data.setHasImage(true);
-            }
-            return data;
+            return new CvData(file.length(), checkIfDocumentHasImage(pdf), wordsFromFile);
         }
         catch (IOException e){
             throw new RuntimeException();
