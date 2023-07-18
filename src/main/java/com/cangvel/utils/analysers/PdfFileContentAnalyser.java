@@ -67,17 +67,18 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     @Override
     public PdfData getPdfData(File file) throws FileExtensionNotSupportedException {
         validateFile(file);
-        PdfData data = new PdfData(file.length(), false);
         try{
+            Set<String> wordsFromFile = (Set<String>) getWords(readFileContent(file));
+            PdfData data = new PdfData(wordsFromFile, file.length(), false);
             PDDocument pdf = getPdfDocument(file);
             if(checkIfDocumentHasImage(pdf)){
                 data.setHasImage(true);
-            };
+            }
+            return data;
         }
         catch (IOException e){
-            System.err.println(e.getMessage());
+            throw new RuntimeException();
         }
-        return data;
     }
 
     private void validateFile(File file) throws FileExtensionNotSupportedException{
