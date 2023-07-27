@@ -9,5 +9,4 @@ class CangvelApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

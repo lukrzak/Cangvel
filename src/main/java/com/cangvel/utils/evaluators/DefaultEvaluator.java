@@ -43,14 +43,14 @@ public class DefaultEvaluator implements Evaluator{
         return (float) totalKeywordsAndRequirementsMet / totalKeywordsAndRequirements;
     }
 
-    private Set<String> getKeywordsIncludedInFile(Set<String> keywords){
+    private Set<String> getKeywordsIncludedInFile(Set<String> keywords) {
         Set<String> lowercaseKeywords = keywords.stream().map(String::toLowerCase).collect(Collectors.toSet());
-        return this.cv.words().stream()
+        return cv.words().stream()
                 .filter(lowercaseKeywords::contains)
                 .collect(Collectors.toSet());
     }
 
-    private Set<Requirement> getFulfilledRequirements(Set<Requirement> requirements){
+    private Set<Requirement> getFulfilledRequirements(Set<Requirement> requirements) {
         return requirements.stream()
                 .filter(r -> r.checkRequirement(cv))
                 .collect(Collectors.toSet());

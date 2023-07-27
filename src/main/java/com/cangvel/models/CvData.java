@@ -1,6 +1,5 @@
 package com.cangvel.models;
 
-
 import java.util.Set;
 
 public record CvData(

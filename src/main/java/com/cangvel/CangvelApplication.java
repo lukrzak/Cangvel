@@ -9,5 +9,4 @@ public class CangvelApplication {
     public static void main(String[] args) {
         SpringApplication.run(CangvelApplication.class, args);
     }
-
 }

@@ -9,6 +9,5 @@ public record CvEvaluation(
         boolean isAccepted,
         Set<String> foundRequiredKeywords,
         Set<String> foundOptionalKeywords,
-        Set<Requirement> fulfilledRequirements
-) {
+        Set<Requirement> fulfilledRequirements) {
 }

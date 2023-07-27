@@ -9,13 +9,20 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class FileAnalysersTest {
 
-    private final Set<String> availableExtensionsForPdfAnalyser = new HashSet<>(List.of("pdf"));
+    private final Set<String> availableExtensionsForPdfAnalyser = new HashSet<>(Set.of("pdf"));
     private final FileContentAnalyser pdfAnalyser = new PdfFileContentAnalyser(availableExtensionsForPdfAnalyser);
     private final File textFile = new File("./src/test/java/com/cangvel/files/only_text.pdf");
     private final File textWithImage = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
@@ -24,17 +31,18 @@ public class FileAnalysersTest {
 
     @Test
     @DisplayName("Test pdf file read")
-    public void testPdfFileContentRead(){
+    public void testPdfFileContentRead() {
         String expectedContent = "Content test.\r\n1\r\n";
-        try{
+        try {
             String fileContent = pdfAnalyser.readFileContent(shortTextFile);
             assertEquals(fileContent, expectedContent, "File contents dont match");
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             fail();
         }
-        assertThrows(NullPointerException.class, () -> pdfAnalyser.readFileContent(null), "Null must throw exception");
-        assertThrows(FileExtensionNotSupportedException.class, () -> pdfAnalyser.readFileContent(badFile), "Must throw exception when file with bad extension is passed");
+        assertThrows(NullPointerException.class, () -> pdfAnalyser.readFileContent(null),
+                "Null must throw exception");
+        assertThrows(FileExtensionNotSupportedException.class, () -> pdfAnalyser.readFileContent(badFile),
+                "Must throw exception when file with bad extension is passed");
     }
 
     @Test
@@ -57,13 +65,13 @@ public class FileAnalysersTest {
 
     @Test
     @DisplayName("Test getting collection of words")
-    public void testGettingWordCollection(){
+    public void testGettingWordCollection() {
         Set<String> partOfExpectedResult = new HashSet<>(List.of("lorem", "ipsum", "sit", "dolor", "amet"));
         Set<String> forbiddenWords = new HashSet<>(List.of("amet,", "laborum.", "aliqua.", ",", ".", "1"));
 
-        try{
-            Collection<String> textResult = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textFile));
-            Collection<String> textWithImageResult = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textWithImage));
+        try {
+            Set<String> textResult = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textFile));
+            Set<String> textWithImageResult = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textWithImage));
 
             assertNotNull(textResult);
             assertNotNull(textWithImageResult);
@@ -71,8 +79,7 @@ public class FileAnalysersTest {
             assertTrue(textWithImageResult.containsAll(partOfExpectedResult));
             assertFalse(textResult.stream().anyMatch(forbiddenWords::contains));
             assertFalse(textWithImageResult.stream().anyMatch(forbiddenWords::contains));
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
             fail("Cannot read file. Check if path is correct");
         }
@@ -85,10 +92,10 @@ public class FileAnalysersTest {
         Set<String> expectedResultSet = new HashSet<>(List.of("lorem", "ipsum"));
         Set<String> emptyKeywords = new HashSet<>(List.of());
         Set<String> expectedResultOfEmptyKeywords = new HashSet<>(List.of());
-        try{
-            Collection<String> words = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textFile));
-            Set<String> result = (Set<String>) pdfAnalyser.getKeyWords(words, keywords);
-            Set<String> emptyResult = (Set<String>) pdfAnalyser.getKeyWords(words, emptyKeywords);
+        try {
+            Set<String> words = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textFile));
+            Set<String> result = pdfAnalyser.getKeyWords(words, keywords);
+            Set<String> emptyResult = pdfAnalyser.getKeyWords(words, emptyKeywords);
 
             assertNotNull(result, "Result must not be null");
             assertEquals(result, expectedResultSet, "Method didn't catch keywords properly");
