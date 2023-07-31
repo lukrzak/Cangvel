@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.BodyPart;
 import javax.mail.Folder;
-import javax.mail.FolderClosedException;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -16,11 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 
 @Component
@@ -31,12 +27,12 @@ public class EmailReader {
     @Value("${application.mail.username}")
     private String username;
 
-    public List<File> getAttachments() throws MessagingException, IOException {
-        getMultipartEmailMessages();
+    public List<File> getAttachments() {
+        List<Message> messages = getMultipartEmailMessages();
         return null;
     }
 
-    private Message[] getMultipartEmailMessages() {
+    private List<Message> getMultipartEmailMessages() {
         Properties props = getEmailProperties();
         Session session = Session.getDefaultInstance(props);
         try (Store store = session.getStore("imap")) {
@@ -45,7 +41,6 @@ public class EmailReader {
             inbox.open(Folder.READ_ONLY);
             Message[] messages = inbox.getMessages();
 
-            //Message[] messages = getMultipartEmailMessages();
             for (Message message : messages)
                 if (message.isMimeType("multipart/*")) {
                     Multipart multipart = (Multipart) message.getContent();
@@ -60,29 +55,13 @@ public class EmailReader {
                 }
 
             inbox.close();
-            return null;
+            return Arrays.asList(messages);
 
-            //return messages;
-
-            //return fetchMultipartMessages(Arrays.stream(messages).toList());
         } catch (MessagingException e) {
             throw new RuntimeException("Cannot read emails");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private List<Message> fetchMultipartMessages(List<Message> messages) {
-        return messages.stream()
-                .filter(m -> {
-                    try {
-                        return m.getContentType().contains("multipart");
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
-                    }
-                    return false;
-                })
-                .toList();
     }
 
     private Properties getEmailProperties() {
