@@ -29,7 +29,7 @@ public class EmailReader {
     private String username;
 
     public List<File> getAttachments() {
-        List<File> files = new LinkedList<>();
+        List<File> files;
         Properties props = getEmailProperties();
         Session session = Session.getDefaultInstance(props);
         try (Store store = session.getStore("imap")) {
@@ -37,16 +37,10 @@ public class EmailReader {
             Folder inbox = store.getFolder("INBOX");
             inbox.open(Folder.READ_ONLY);
             Message[] messages = inbox.getMessages();
-
-            for (Message message : messages) {
-                if (message.isMimeType("multipart/*")) {
-                    Multipart multipart = (Multipart) message.getContent();
-                    files.add(fetchFileFromMultipart(multipart));
-                }
-            }
+            files = mapMultipartToFile(messages);
             inbox.close();
-            return files.stream()
-                    .filter(Objects::nonNull).toList();
+
+            return files;
         } catch (MessagingException | IOException e) {
             throw new RuntimeException("Cannot read emails");
         }
@@ -61,32 +55,37 @@ public class EmailReader {
         return props;
     }
 
-    private File convertPdfToFileType(InputStream is, String fileName) {
-        try {
-            File tempFile = File.createTempFile(fileName, ".pdf");
-            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = is.read(buffer)) != -1) fos.write(buffer, 0, bytesRead);
-            }
-            return tempFile;
-        } catch (IOException e) {
-            throw new RuntimeException();
+    private File convertPdfToFileType(InputStream is, String fileName) throws IOException {
+        File tempFile = File.createTempFile(fileName, ".pdf");
+        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1) fos.write(buffer, 0, bytesRead);
         }
+        return tempFile;
     }
 
-    private File fetchFileFromMultipart(Multipart multipart) {
-        try {
-            for (int i = 0; i < multipart.getCount(); i++) {
-                BodyPart bp = multipart.getBodyPart(i);
-                if (Part.ATTACHMENT.equalsIgnoreCase(bp.getDisposition())) {
-                    String fileName = bp.getFileName();
-                    return convertPdfToFileType(bp.getInputStream(), fileName);
-                }
+    private File fetchFileFromMultipart(Multipart multipart) throws MessagingException, IOException {
+        for (int i = 0; i < multipart.getCount(); i++) {
+            BodyPart bp = multipart.getBodyPart(i);
+            if (Part.ATTACHMENT.equalsIgnoreCase(bp.getDisposition())) {
+                String fileName = bp.getFileName();
+                return convertPdfToFileType(bp.getInputStream(), fileName);
             }
-        } catch (MessagingException | IOException e) {
-            e.printStackTrace();
         }
         return null;
+    }
+
+    private List<File> mapMultipartToFile(Message[] messages) throws MessagingException, IOException {
+        List<File> files = new LinkedList<>();
+        for (Message message : messages) {
+            if (message.isMimeType("multipart/*")) {
+                Multipart multipart = (Multipart) message.getContent();
+                files.add(fetchFileFromMultipart(multipart));
+            }
+        }
+        return files.stream()
+                .filter(Objects::nonNull)
+                .toList();
     }
 }
