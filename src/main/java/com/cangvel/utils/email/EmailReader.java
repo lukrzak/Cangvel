@@ -15,8 +15,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 @Component
@@ -28,11 +29,7 @@ public class EmailReader {
     private String username;
 
     public List<File> getAttachments() {
-        List<Message> messages = getMultipartEmailMessages();
-        return null;
-    }
-
-    private List<Message> getMultipartEmailMessages() {
+        List<File> files = new LinkedList<>();
         Properties props = getEmailProperties();
         Session session = Session.getDefaultInstance(props);
         try (Store store = session.getStore("imap")) {
@@ -41,26 +38,17 @@ public class EmailReader {
             inbox.open(Folder.READ_ONLY);
             Message[] messages = inbox.getMessages();
 
-            for (Message message : messages)
+            for (Message message : messages) {
                 if (message.isMimeType("multipart/*")) {
                     Multipart multipart = (Multipart) message.getContent();
-                    for (int i = 0; i < multipart.getCount(); i++) {
-                        BodyPart bp = multipart.getBodyPart(i);
-                        if (Part.ATTACHMENT.equalsIgnoreCase(bp.getDisposition())) {
-                            String fileName = bp.getFileName();
-                            System.out.println("jest pdf");
-                            File pdfFile = convertPdfToFileType(bp.getInputStream(), fileName);
-                        }
-                    }
+                    files.add(fetchFileFromMultipart(multipart));
                 }
-
+            }
             inbox.close();
-            return Arrays.asList(messages);
-
-        } catch (MessagingException e) {
+            return files.stream()
+                    .filter(Objects::nonNull).toList();
+        } catch (MessagingException | IOException e) {
             throw new RuntimeException("Cannot read emails");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -76,7 +64,6 @@ public class EmailReader {
     private File convertPdfToFileType(InputStream is, String fileName) {
         try {
             File tempFile = File.createTempFile(fileName, ".pdf");
-            // Write the attachment content to the temporary file
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
@@ -86,5 +73,20 @@ public class EmailReader {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+    }
+
+    private File fetchFileFromMultipart(Multipart multipart) {
+        try {
+            for (int i = 0; i < multipart.getCount(); i++) {
+                BodyPart bp = multipart.getBodyPart(i);
+                if (Part.ATTACHMENT.equalsIgnoreCase(bp.getDisposition())) {
+                    String fileName = bp.getFileName();
+                    return convertPdfToFileType(bp.getInputStream(), fileName);
+                }
+            }
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
