@@ -2,6 +2,7 @@ package com.cangvel.utils.analysers;
 
 import com.cangvel.exceptions.FileExtensionNotSupportedException;
 import com.cangvel.models.CvData;
+import lombok.NoArgsConstructor;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -21,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@NoArgsConstructor
 public class PdfFileContentAnalyser implements FileContentAnalyser{
 
     Set<String> allowedExtensions;
@@ -77,8 +79,10 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     }
 
     private void validateFile(File file) throws FileExtensionNotSupportedException {
-        if (file == null) throw new NullPointerException();
-        checkForCorrectExtension(file.getName());
+        if (file == null)
+            throw new NullPointerException();
+        if (allowedExtensions != null)
+            checkForCorrectExtension(file.getName());
     }
 
     private PDDocument getPdfDocument(File file) throws IOException {
