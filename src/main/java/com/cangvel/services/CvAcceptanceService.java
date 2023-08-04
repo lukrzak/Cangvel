@@ -6,6 +6,7 @@ import com.cangvel.models.CvRequirements;
 import com.cangvel.utils.analysers.FileContentAnalyser;
 import com.cangvel.utils.email.EmailReader;
 import com.cangvel.utils.evaluators.Evaluator;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @Service
+@Log4j2
 public class CvAcceptanceService {
 
     private final CvRequirements req = new CvRequirements(
-            new TreeSet<>(Set.of("java", "spring")),
-            new TreeSet<>(List.of("hibernate")),
+            new TreeSet<>(Set.of("lorem", "ipsum")),
+            new TreeSet<>(List.of("sit")),
             Collections.emptySet(),
             0.60f);
     private final FileContentAnalyser fileContentAnalyser;
@@ -61,6 +63,7 @@ public class CvAcceptanceService {
         File savedFile = new File(saveFilePath + "\\" + file.getName());
         try {
             FileUtils.copyFile(file, savedFile);
+            log.info("File " + file.getName() + " has been saved");
         } catch (IOException e) {
             e.printStackTrace();
         }
