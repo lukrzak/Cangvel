@@ -39,28 +39,24 @@ public class CvEvaluationTests {
 
     @BeforeEach
     public void setup() {
-        try {
-            evaluatorForTextFile = new DefaultEvaluator(analyser.getPdfData(textFile));
-            evaluatorForTextWithImageFile = new DefaultEvaluator(analyser.getPdfData(textWithImageFile));
-            evaluatorForShortTextFile = new DefaultEvaluator(analyser.getPdfData(shortTextFile));
-        } catch (IOException e) {
-            System.err.println("Cannot evaluate file");
-        }
+        evaluatorForTextFile = new DefaultEvaluator();
+        evaluatorForTextWithImageFile = new DefaultEvaluator();
+        evaluatorForShortTextFile = new DefaultEvaluator();
     }
 
     @Test
     @DisplayName("Test default evaluator")
-    public void testDefaultEvaluatorWithTextOnlyFile(){
-        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements1), 0.66f, true);
-        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements2), 0.50f, false);
-        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements3), 0.25f, true);
+    public void testDefaultEvaluatorWithTextOnlyFile() throws IOException {
+        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements1, analyser.getPdfData(textFile)), 0.66f, true);
+        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements2, analyser.getPdfData(textFile)), 0.50f, false);
+        testEvaluator(evaluatorForTextFile.evaluateCvFile(requirements3, analyser.getPdfData(textFile)), 0.25f, true);
 
-        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements1), 0.66f, true);
-        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements2), 0.75f, true);
-        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements3), 0.25f, true);
+        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements1, analyser.getPdfData(textWithImageFile)), 0.66f, true);
+        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements2, analyser.getPdfData(textWithImageFile)), 0.75f, true);
+        testEvaluator(evaluatorForTextWithImageFile.evaluateCvFile(requirements3, analyser.getPdfData(textWithImageFile)), 0.25f, true);
 
-        testEvaluator(evaluatorForShortTextFile.evaluateCvFile(requirements2), 0.00f, false);
-        testEvaluator(evaluatorForShortTextFile.evaluateCvFile(requirements3), 0.00f, false);
+        testEvaluator(evaluatorForShortTextFile.evaluateCvFile(requirements2, analyser.getPdfData(shortTextFile)), 0.00f, false);
+        testEvaluator(evaluatorForShortTextFile.evaluateCvFile(requirements3, analyser.getPdfData(shortTextFile)), 0.00f, false);
     }
 
     private void testEvaluator(CvEvaluation evaluation, float requirementsFulfillment, boolean isAccepted) {

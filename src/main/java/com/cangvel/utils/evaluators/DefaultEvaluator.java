@@ -4,23 +4,22 @@ import com.cangvel.models.CvData;
 import com.cangvel.models.CvEvaluation;
 import com.cangvel.models.CvRequirements;
 import com.cangvel.models.requirements.Requirement;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class DefaultEvaluator implements Evaluator{
 
-    private final CvData cv;
+    private CvData cv;
     private Set<String> requiredWordsFoundInFile;
     private Set<String> optionalWordsFoundInFile;
     private Set<Requirement> fulfilledRequirements;
 
-    public DefaultEvaluator(CvData cv) {
-        this.cv = cv;
-    }
-
     @Override
-    public CvEvaluation evaluateCvFile(CvRequirements requirements) {
+    public CvEvaluation evaluateCvFile(CvRequirements requirements, CvData cvData) {
+        cv = cvData;
         requiredWordsFoundInFile = getKeywordsIncludedInFile(requirements.requiredKeywords());
         optionalWordsFoundInFile = getKeywordsIncludedInFile(requirements.optionalKeywords());
         fulfilledRequirements = getFulfilledRequirements(requirements.requirements());
