@@ -63,7 +63,7 @@ public class CvAcceptanceService {
         File savedFile = new File(saveFilePath + "\\" + file.getName());
         try {
             FileUtils.copyFile(file, savedFile);
-            log.info("File " + file.getName() + " has been saved");
+            log.info("File " + savedFile.getName() + " has been saved in " + savedFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
