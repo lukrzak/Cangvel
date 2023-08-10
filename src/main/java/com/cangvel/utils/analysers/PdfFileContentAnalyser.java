@@ -103,8 +103,7 @@ public class PdfFileContentAnalyser implements FileContentAnalyser {
     }
 
     private void validateFile(File file) throws FileExtensionNotSupportedException {
-        if (allowedExtensions != null)
-            checkForCorrectExtension(file.getName());
+        checkForCorrectExtension(file.getName());
     }
 
     private void checkForCorrectExtension(String filename) throws FileExtensionNotSupportedException {
