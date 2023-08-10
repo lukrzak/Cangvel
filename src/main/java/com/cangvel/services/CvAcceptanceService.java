@@ -9,6 +9,8 @@ import com.cangvel.utils.evaluators.Evaluator;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -20,11 +22,12 @@ import java.util.TreeSet;
 
 @Service
 @Log4j2
+@EnableScheduling
 public class CvAcceptanceService {
 
     private final CvRequirements req = new CvRequirements(
-            new TreeSet<>(Set.of("lorem", "ipsum")),
-            new TreeSet<>(List.of("sit")),
+            new TreeSet<>(Set.of("angielski", "student")),
+            new TreeSet<>(List.of("Intel")),
             Collections.emptySet(),
             0.60f);
     private final FileContentAnalyser fileContentAnalyser;
@@ -41,6 +44,7 @@ public class CvAcceptanceService {
         this.evaluator = evaluator;
     }
 
+    @Scheduled(fixedDelay = 10_000)
     public void rateEmailAttachments() {
         List<File> files = emailReader.getAttachments();
         for (File file : files) {
