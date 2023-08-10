@@ -8,5 +8,5 @@ public interface Evaluator {
 
     CvEvaluation evaluateCvFile(CvRequirements requirements, CvData cvData);
 
-    float calculateEvaluationValue(CvRequirements requirements);
+    float calculateEvaluationValue(CvRequirements requirements, CvData cvData);
 }

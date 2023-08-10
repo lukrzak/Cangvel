@@ -33,6 +33,13 @@ public class PdfFileContentAnalyser implements FileContentAnalyser {
         this.allowedExtensions = allowedExtensions;
     }
 
+    /**
+     * Returns content of file, if valid.
+     *
+     * @param file File to analyse.
+     * @return Whole document text as String.
+     * @throws IOException is thrown, when unable to load pdf file.
+     */
     @Override
     public String readFileContent(File file) throws IOException {
         validateFile(file);
@@ -47,6 +54,10 @@ public class PdfFileContentAnalyser implements FileContentAnalyser {
         throw new IOException("Cannot read file");
     }
 
+    /**
+     * @param fileContent String to slice to words.
+     * @return Set of words that occurred in fileContent parameter.
+     */
     @Override
     public Set<String> getWords(String fileContent) {
         String trimmedContent = removeEscapeCharactersFromFileContent(fileContent);
@@ -60,6 +71,11 @@ public class PdfFileContentAnalyser implements FileContentAnalyser {
         return filteredWords;
     }
 
+    /**
+     * @param keywords Set of keywords.
+     * @param words    Set of words, to get keywords from.
+     * @return Set of keywords, that were in words set.
+     */
     @Override
     public Set<String> getKeyWords(Set<String> keywords, Set<String> words) {
         return words.stream()
@@ -67,6 +83,13 @@ public class PdfFileContentAnalyser implements FileContentAnalyser {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Validates and returns data from File, as CvData object.
+     *
+     * @param file File to analyse.
+     * @return Information of given file in CvData object
+     * @throws FileExtensionNotSupportedException - Thrown when file extension is not supported.
+     */
     @Override
     public CvData getPdfData(File file) throws FileExtensionNotSupportedException {
         validateFile(file);

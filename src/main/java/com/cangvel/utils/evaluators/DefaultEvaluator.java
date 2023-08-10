@@ -14,30 +14,41 @@ import java.util.stream.Collectors;
 @Log4j2
 public class DefaultEvaluator implements Evaluator {
 
-    private CvData cv;
-
     private Set<String> requiredWordsFoundInFile;
 
     private Set<String> optionalWordsFoundInFile;
 
     private Set<Requirement> fulfilledRequirements;
 
+    /**
+     * Analyses cv, based on received requirements and passed data as CvRequirements and CvData as arguments,
+     * respectively.
+     *
+     * @param requirements Object that represents requirements to rate CV.
+     * @param cvData       Object with analysed data from file.
+     * @return Object with CV evaluation.
+     */
     @Override
     public CvEvaluation evaluateCvFile(CvRequirements requirements, CvData cvData) {
-        cv = cvData;
-        requiredWordsFoundInFile = getKeywordsIncludedInFile(requirements.requiredKeywords());
-        optionalWordsFoundInFile = getKeywordsIncludedInFile(requirements.optionalKeywords());
-        fulfilledRequirements = getFulfilledRequirements(requirements.requirements());
+        requiredWordsFoundInFile = getKeywordsIncludedInFile(requirements.requiredKeywords(), cvData);
+        optionalWordsFoundInFile = getKeywordsIncludedInFile(requirements.optionalKeywords(), cvData);
+        fulfilledRequirements = getFulfilledRequirements(requirements.requirements(), cvData);
 
-        float evaluation = calculateEvaluationValue(requirements);
+        float evaluation = calculateEvaluationValue(requirements, cvData);
         boolean isAccepted = evaluation >= requirements.acceptedThreshold();
         log.info("Is accepted: " + isAccepted + ". Evaluation: " + evaluation);
 
         return new CvEvaluation(evaluation, isAccepted, requiredWordsFoundInFile, optionalWordsFoundInFile, fulfilledRequirements);
     }
 
+    /**
+     * Returns evaluation presented as float value (0.0 - 1.0).
+     *
+     * @param requirements Requirements for cv to evaluate on.
+     * @return rate of CV as float type.
+     */
     @Override
-    public float calculateEvaluationValue(CvRequirements requirements) {
+    public float calculateEvaluationValue(CvRequirements requirements, CvData cvData) {
         int totalKeywordsAndRequirementsMet = requiredWordsFoundInFile.size()
                 + optionalWordsFoundInFile.size()
                 + fulfilledRequirements.size();
@@ -48,16 +59,16 @@ public class DefaultEvaluator implements Evaluator {
         return (float) totalKeywordsAndRequirementsMet / totalKeywordsAndRequirements;
     }
 
-    private Set<String> getKeywordsIncludedInFile(Set<String> keywords) {
+    private Set<String> getKeywordsIncludedInFile(Set<String> keywords, CvData cvData) {
         Set<String> lowercaseKeywords = keywords.stream().map(String::toLowerCase).collect(Collectors.toSet());
-        return cv.words().stream()
+        return cvData.words().stream()
                 .filter(lowercaseKeywords::contains)
                 .collect(Collectors.toSet());
     }
 
-    private Set<Requirement> getFulfilledRequirements(Set<Requirement> requirements) {
+    private Set<Requirement> getFulfilledRequirements(Set<Requirement> requirements, CvData cvData) {
         return requirements.stream()
-                .filter(r -> r.checkRequirement(cv))
+                .filter(r -> r.checkRequirement(cvData))
                 .collect(Collectors.toSet());
     }
 }

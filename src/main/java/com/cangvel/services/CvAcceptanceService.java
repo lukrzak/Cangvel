@@ -49,6 +49,9 @@ public class CvAcceptanceService {
         this.evaluator = evaluator;
     }
 
+    /**
+     * Scheduled method, that reads and saves accepted CVs every 10 seconds.
+     */
     @Scheduled(fixedDelay = 10_000)
     public void rateEmailAttachments() {
         List<File> files = emailReader.getAttachments();

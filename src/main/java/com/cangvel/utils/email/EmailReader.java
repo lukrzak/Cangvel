@@ -25,9 +25,16 @@ public class EmailReader {
 
     @Value("${application.mail.password}")
     private String password;
+
     @Value("${application.mail.username}")
     private String username;
 
+    /**
+     * Connects to inbox and returns all attachments in list. Closes connection with inbox after. Requires proper
+     * configuration by passing environment variables. Throws Runtime exception when failing to connect to inbox.
+     *
+     * @return list of all attachments as File type.
+     */
     public List<File> getAttachments() {
         List<File> files;
         Properties props = getEmailProperties();
@@ -85,7 +92,7 @@ public class EmailReader {
                 files.add(fetchFileFromMultipart(multipart));
             }
         }
-        
+
         return files.stream()
                 .filter(Objects::nonNull)
                 .toList();
