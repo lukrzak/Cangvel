@@ -4,17 +4,22 @@ import com.cangvel.models.CvData;
 import com.cangvel.models.CvEvaluation;
 import com.cangvel.models.CvRequirements;
 import com.cangvel.models.requirements.Requirement;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class DefaultEvaluator implements Evaluator{
+@Log4j2
+public class DefaultEvaluator implements Evaluator {
 
     private CvData cv;
+
     private Set<String> requiredWordsFoundInFile;
+
     private Set<String> optionalWordsFoundInFile;
+
     private Set<Requirement> fulfilledRequirements;
 
     @Override
@@ -26,6 +31,7 @@ public class DefaultEvaluator implements Evaluator{
 
         float evaluation = calculateEvaluationValue(requirements);
         boolean isAccepted = evaluation >= requirements.acceptedThreshold();
+        log.info("Is accepted: " + isAccepted + ". Evaluation: " + evaluation);
 
         return new CvEvaluation(evaluation, isAccepted, requiredWordsFoundInFile, optionalWordsFoundInFile, fulfilledRequirements);
     }

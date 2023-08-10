@@ -23,20 +23,21 @@ import java.util.stream.Collectors;
 
 @Component
 @NoArgsConstructor
-public class PdfFileContentAnalyser implements FileContentAnalyser{
+public class PdfFileContentAnalyser implements FileContentAnalyser {
 
-    Set<String> allowedExtensions;
+    Set<String> allowedExtensions = Set.of("pdf");
 
     public PdfFileContentAnalyser(Set<String> allowedExtensions) {
+        if (allowedExtensions == null)
+            throw new NullPointerException();
         this.allowedExtensions = allowedExtensions;
     }
 
     @Override
     public String readFileContent(File file) throws IOException {
         validateFile(file);
-
         try {
-            PDDocument pdf = getPdfDocument(file);
+            PDDocument pdf = Loader.loadPDF(file);
             PDFTextStripper stripper = new PDFTextStripper();
             return stripper.getText(pdf);
         } catch (IOException e) {
@@ -71,7 +72,7 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
         validateFile(file);
         try {
             Set<String> wordsFromFile = getWords(readFileContent(file));
-            PDDocument pdf = getPdfDocument(file);
+            PDDocument pdf = Loader.loadPDF(file);
             return new CvData(file.length(), checkIfDocumentHasImage(pdf), wordsFromFile);
         } catch (IOException e) {
             throw new RuntimeException();
@@ -79,19 +80,8 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
     }
 
     private void validateFile(File file) throws FileExtensionNotSupportedException {
-        if (file == null)
-            throw new NullPointerException();
         if (allowedExtensions != null)
             checkForCorrectExtension(file.getName());
-    }
-
-    private PDDocument getPdfDocument(File file) throws IOException {
-        try {
-            return Loader.loadPDF(file);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-        throw new IOException("No such file");
     }
 
     private void checkForCorrectExtension(String filename) throws FileExtensionNotSupportedException {
@@ -107,7 +97,8 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
         PDPageTree pageTree = pdf.getPages();
         for (PDPage page : pageTree) {
             PDResources resources = page.getResources();
-            if (pdfResourcesContainImage(resources)) return true;
+            if (pdfResourcesContainImage(resources))
+                return true;
         }
         return false;
     }
@@ -116,7 +107,8 @@ public class PdfFileContentAnalyser implements FileContentAnalyser{
         for (COSName cosName : resources.getXObjectNames())
             try {
                 PDXObject o = resources.getXObject(cosName);
-                if (o instanceof PDImageXObject) return true;
+                if (o instanceof PDImageXObject)
+                    return true;
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }

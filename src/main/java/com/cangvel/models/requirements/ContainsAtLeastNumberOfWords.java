@@ -2,7 +2,7 @@ package com.cangvel.models.requirements;
 
 import com.cangvel.models.CvData;
 
-public class ContainsAtLeastNumberOfWords implements Requirement{
+public class ContainsAtLeastNumberOfWords implements Requirement {
 
     private final int REQUIRED_AMOUNT_OF_WORDS_IN_FILE;
 

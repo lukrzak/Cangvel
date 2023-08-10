@@ -25,16 +25,21 @@ import java.util.TreeSet;
 @EnableScheduling
 public class CvAcceptanceService {
 
-    private final CvRequirements req = new CvRequirements(
-            new TreeSet<>(Set.of("angielski", "student")),
-            new TreeSet<>(List.of("Intel")),
+    private final CvRequirements sampleRequirements = new CvRequirements(
+            new TreeSet<>(Set.of("English", "Java")),
+            new TreeSet<>(Set.of("Spring")),
             Collections.emptySet(),
             0.60f);
+
     private final FileContentAnalyser fileContentAnalyser;
+
     private final EmailReader emailReader;
+
     private final Evaluator evaluator;
+
     @Value("${application.file.save.enabled}")
     private boolean savingFilesEnabled;
+
     @Value("${application.file.save.path}")
     private String saveFilePath;
 
@@ -56,7 +61,7 @@ public class CvAcceptanceService {
     private void rateAndSaveFile(File file) {
         try {
             CvData cvData = fileContentAnalyser.getPdfData(file);
-            CvEvaluation cvEvaluation = evaluator.evaluateCvFile(req, cvData);
+            CvEvaluation cvEvaluation = evaluator.evaluateCvFile(sampleRequirements, cvData);
             if (savingFilesEnabled && cvEvaluation.isAccepted()) saveFile(file);
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +72,7 @@ public class CvAcceptanceService {
         File savedFile = new File(saveFilePath + "\\" + file.getName());
         try {
             FileUtils.copyFile(file, savedFile);
-            log.info("File " + savedFile.getName() + " has been saved in " + savedFile.getAbsolutePath());
+            log.info(savedFile.getAbsolutePath() + " saved successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }

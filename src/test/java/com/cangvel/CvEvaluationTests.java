@@ -23,19 +23,28 @@ public class CvEvaluationTests {
 
     // Set of test files
     private final File textFile = new File("./src/test/java/com/cangvel/files/only_text.pdf");
+
     private final File shortTextFile = new File("./src/test/java/com/cangvel/files/short_text.pdf");
+
     private final File textWithImageFile = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
+
     // Predefined requirements
-    CvRequirements requirements1 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"),
-            Set.of(), 0.6F);
+    CvRequirements requirements1 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"), Set.of(), 0.6F);
+
     CvRequirements requirements2 = new CvRequirements(Set.of("Lorem"), Set.of("aaa", "ipsum"),
             Set.of(new ContainsProfilePictureRequirement()), 0.6F);
+
     CvRequirements requirements3 = new CvRequirements(Set.of("aaaaa", "bbbbb"), Set.of("ccccc"),
             Set.of(new ContainsAtLeastNumberOfWords(5)), 0.25F);
+
     FileContentAnalyser analyser = new PdfFileContentAnalyser(Set.of("pdf"));
+
     Evaluator evaluatorForTextFile;
+
     Evaluator evaluatorForShortTextFile;
+
     Evaluator evaluatorForTextWithImageFile;
+
 
     @BeforeEach
     public void setup() {

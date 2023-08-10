@@ -60,7 +60,8 @@ public class EmailReader {
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
             byte[] buffer = new byte[1024];
             int bytesRead;
-            while ((bytesRead = is.read(buffer)) != -1) fos.write(buffer, 0, bytesRead);
+            while ((bytesRead = is.read(buffer)) != -1)
+                fos.write(buffer, 0, bytesRead);
         }
         return tempFile;
     }
@@ -84,6 +85,7 @@ public class EmailReader {
                 files.add(fetchFileFromMultipart(multipart));
             }
         }
+        
         return files.stream()
                 .filter(Objects::nonNull)
                 .toList();

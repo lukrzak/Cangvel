@@ -4,7 +4,6 @@ import com.cangvel.models.CvData;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Set;
 
 public interface FileContentAnalyser {

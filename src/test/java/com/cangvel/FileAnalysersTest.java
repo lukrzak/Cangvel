@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,11 +20,16 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class FileAnalysersTest {
 
-    private final Set<String> availableExtensionsForPdfAnalyser = new HashSet<>(Set.of("pdf"));
+    private final Set<String> availableExtensionsForPdfAnalyser = Set.of("pdf");
+
     private final FileContentAnalyser pdfAnalyser = new PdfFileContentAnalyser(availableExtensionsForPdfAnalyser);
+
     private final File textFile = new File("./src/test/java/com/cangvel/files/only_text.pdf");
+
     private final File textWithImage = new File("./src/test/java/com/cangvel/files/text_with_image.pdf");
+
     private final File badFile = new File("./src/test/java/com/cangvel/files/bad_file.bad");
+
     private final File shortTextFile = new File("./src/test/java/com/cangvel/files/short_text.pdf");
 
     @Test
@@ -47,8 +50,8 @@ public class FileAnalysersTest {
 
     @Test
     @DisplayName("Test pdf analyser collected data")
-    public void testPdfFileInfo(){
-        try{
+    public void testPdfFileInfo() {
+        try {
             CvData dataFromTextPdf = pdfAnalyser.getPdfData(textFile);
             CvData dataFromTextAndImagePdf = pdfAnalyser.getPdfData(textWithImage);
 
@@ -66,8 +69,8 @@ public class FileAnalysersTest {
     @Test
     @DisplayName("Test getting collection of words")
     public void testGettingWordCollection() {
-        Set<String> partOfExpectedResult = new HashSet<>(List.of("lorem", "ipsum", "sit", "dolor", "amet"));
-        Set<String> forbiddenWords = new HashSet<>(List.of("amet,", "laborum.", "aliqua.", ",", ".", "1"));
+        Set<String> partOfExpectedResult = Set.of("lorem", "ipsum", "sit", "dolor", "amet");
+        Set<String> forbiddenWords = Set.of("amet,", "laborum.", "aliqua.", ",", ".", "1");
 
         try {
             Set<String> textResult = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textFile));
@@ -87,11 +90,11 @@ public class FileAnalysersTest {
 
     @Test
     @DisplayName("Test analysing keywords in pdf file")
-    public void testPdfKeywordAnalysis(){
-        Set<String> keywords = new HashSet<>(List.of("lorem", "ipsum", "word", "ipsumm"));
-        Set<String> expectedResultSet = new HashSet<>(List.of("lorem", "ipsum"));
-        Set<String> emptyKeywords = new HashSet<>(List.of());
-        Set<String> expectedResultOfEmptyKeywords = new HashSet<>(List.of());
+    public void testPdfKeywordAnalysis() {
+        Set<String> keywords = Set.of("lorem", "ipsum", "word", "ipsumm");
+        Set<String> expectedResultSet = Set.of("lorem", "ipsum");
+        Set<String> emptyKeywords = Set.of();
+        Set<String> expectedResultOfEmptyKeywords = Set.of();
         try {
             Set<String> words = pdfAnalyser.getWords(pdfAnalyser.readFileContent(textFile));
             Set<String> result = pdfAnalyser.getKeyWords(words, keywords);
