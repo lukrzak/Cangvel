@@ -46,11 +46,11 @@ public class EmailReader {
             Message[] messages = inbox.getMessages();
             files = mapMultipartToFile(messages);
             inbox.close();
-
-            return files;
         } catch (MessagingException | IOException e) {
             throw new RuntimeException("Cannot read emails");
         }
+
+        return files;
     }
 
     private Properties getEmailProperties() {
@@ -60,28 +60,6 @@ public class EmailReader {
         props.setProperty("mail.imap.port", "993");
 
         return props;
-    }
-
-    private File convertPdfToFileType(InputStream is, String fileName) throws IOException {
-        File tempFile = File.createTempFile(fileName, ".pdf");
-        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = is.read(buffer)) != -1)
-                fos.write(buffer, 0, bytesRead);
-        }
-        return tempFile;
-    }
-
-    private File fetchFileFromMultipart(Multipart multipart) throws MessagingException, IOException {
-        for (int i = 0; i < multipart.getCount(); i++) {
-            BodyPart bp = multipart.getBodyPart(i);
-            if (Part.ATTACHMENT.equalsIgnoreCase(bp.getDisposition())) {
-                String fileName = bp.getFileName();
-                return convertPdfToFileType(bp.getInputStream(), fileName);
-            }
-        }
-        return null;
     }
 
     private List<File> mapMultipartToFile(Message[] messages) throws MessagingException, IOException {
@@ -96,5 +74,27 @@ public class EmailReader {
         return files.stream()
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    private File fetchFileFromMultipart(Multipart multipart) throws MessagingException, IOException {
+        for (int i = 0; i < multipart.getCount(); i++) {
+            BodyPart bp = multipart.getBodyPart(i);
+            if (Part.ATTACHMENT.equalsIgnoreCase(bp.getDisposition())) {
+                String fileName = bp.getFileName();
+                return convertMessageAttachmentToFileType(bp.getInputStream(), fileName);
+            }
+        }
+        return null;
+    }
+
+    private File convertMessageAttachmentToFileType(InputStream is, String fileName) throws IOException {
+        File tempFile = File.createTempFile(fileName, ".pdf");
+        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1)
+                fos.write(buffer, 0, bytesRead);
+        }
+        return tempFile;
     }
 }
