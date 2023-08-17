@@ -27,7 +27,7 @@ After proper parameter configuration, application will analyse your inbox automa
 
 ## Known issues
 
-- Attachments are continously evaluated in a loop.
+- Attachments are continously saved after being accepted, resulting in file duplication.
 
 ## Planned features
 
